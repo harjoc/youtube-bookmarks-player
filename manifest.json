@@ -6,7 +6,8 @@
     "permissions": [
         "tabs",
         "bookmarks",
-        "activeTab"
+        "activeTab",
+        "storage"
     ],
     "browser_action": {
         "default_title": "Youtube Bookmarks Player",
