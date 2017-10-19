@@ -1,0 +1,29 @@
+{
+    "name": "Youtube Bookmarks Player",
+    "version": "1.0",
+    "description": "Play your bookmarked youtube videos as a playlist.",
+    "manifest_version": 2,
+    "permissions": [
+        "tabs",
+        "bookmarks",
+        "activeTab"
+    ],
+    "browser_action": {
+        "default_title": "Youtube Bookmarks Player",
+        "default_icon": "play.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://www.youtube.com/*"],
+            "js": ["isolated.js"]
+        }
+    ],
+	"web_accessible_resources": [
+		"injected.js"
+	],
+    "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'"
+}
