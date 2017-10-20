@@ -1,21 +1,21 @@
 var reverse = false;
+var shuffle = false;
 
 chrome.extension.onMessage.addListener(function(msg, sender) {
-    if (msg.name == "setting-changed") {
+    if (msg.name == "settings-changed") {
         reverse = msg.reverse;
-    } else if (msg.name != "video-ended") {
-        function walk(items, dir) {
+        shuffle = msg.shuffle;
+    } else if (msg.name == "video-ended") {
+        function pickShuffle(items) {
             var found = false;
             
-            alert(2);
-
             var n = items.length;
-            var a = (dir>0) ? 0 : n-1;
-            var b = (dir>0) ? n : -1;
+            var a = !reverse ? 0 : n-1;
+            var b = !reverse ? n : -1;
+            var d = !reverse ? 1 : -1;
 
-            for (var i = a; i != b; i += dir) {
+            for (var i = a; i != b; i += d) {
                 if (found && items[i].url && items[i].url.indexOf("youtube.com") != -1) {
-                    alert("i " + i);
                     chrome.tabs.update(sender.tab.id, {url: items[i].url});
                     return true;
                 }
@@ -23,18 +23,43 @@ chrome.extension.onMessage.addListener(function(msg, sender) {
                 found |= items[i].url == sender.tab.url;
             }
 
-            alert("4");
-
             return false;
         }
         
-        alert(1);
+        function pickNonShuffle(items) {
+            for (;;) {
+                var i = Math.floor(Math.random() * items.length);
+                if (items[i].url && items[i].url.indexOf("youtube.com") != -1) {
+                    chrome.tabs.update(sender.tab.id, {url: items[i].url});
+                    return;
+                }
+            }
+        }
 
-        chrome.bookmarks.search({}, function(items) {
-            alert("reverse " + reverse);
-            var dir = reverse ? -1 : 1;
+        function handleResults(items) {
+            if (shuffle) {
+                pickShuffle(items);
+                return;
+            }
+
+            var found = pickNonShuffle(items);
+
+            /*if (found) return;
             
-            walk(items, dir);
-        });
+            chrome.extension.sendMessage({name: "settings-changed", 
+                reverse: reverse,
+                shuffle: shuffle,
+            });
+
+            walk(items);*/
+        }
+
+        chrome.bookmarks.search({title:"music"}, function(musics) {
+            if (musics[0]) {
+                chrome.bookmarks.getSubTree(musics[0].id, handleResults);
+            } else {
+                chrome.bookmarks.getTree(handleResults);
+            }
+        }
     }
 });

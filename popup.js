@@ -1,16 +1,36 @@
-chrome.storage.sync.get(["reverse"], function(list) {
-    chrome.extension.sendMessage({name: "setting-changed", reverse: list.reverse});
+chrome.storage.sync.get([
+            "reverse", 
+            "shuffle",
+        ], function(cfg) {
+    chrome.extension.sendMessage({name: "settings-changed", cfg});
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    chrome.storage.sync.get(["reverse"], function(list) {
+    chrome.storage.sync.get([
+                "reverse", 
+                "shuffle",
+            ], function(cfg) {
         var reverseCheck = document.getElementById('reverse');
+        var shuffleCheck = document.getElementById('shuffle');
 
-        reverseCheck.checked = list.reverse;
+        reverseCheck.checked = cfg.reverse;
+        shuffleCheck.checked = cfg.shuffle;
         
-        reverseCheck.addEventListener('click', function() {
-            chrome.storage.sync.set({reverse: reverseCheck.checked});
-            chrome.extension.sendMessage({name: "setting-changed", reverse: reverseCheck.checked});
-        });
+        function collect()
+        {
+            chrome.storage.sync.set({
+                reverse: reverseCheck.checked,
+                shuffle: shuffleCheck.checked,
+            });
+            chrome.extension.sendMessage({
+                name: "settings-changed", 
+
+                reverse: reverseCheck.checked,
+                shuffle: shuffleCheck.checked,
+            });
+        }
+
+        reverseCheck.addEventListener('click', collect);
+        shuffleCheck.addEventListener('click', collect);
     });
 });
