@@ -6,16 +6,16 @@ chrome.extension.onMessage.addListener(function(msg, sender) {
         reverse = msg.reverse;
         shuffle = msg.shuffle;
     } else if (msg.name == "video-ended") {
-        function pickShuffle(items) {
+        function pickNonShuffle(items, begin, end) {
             var found = false;
             
             var n = items.length;
-            var a = !reverse ? 0 : n-1;
-            var b = !reverse ? n : -1;
+            var a = !reverse ? begin : end-1;
+            var b = !reverse ? end : -1;
             var d = !reverse ? 1 : -1;
 
             for (var i = a; i != b; i += d) {
-                if (found && items[i].url && items[i].url.indexOf("youtube.com") != -1) {
+                if (found && items[i].url && items[i].url.indexOf("youtube.com/watch") != -1) {
                     chrome.tabs.update(sender.tab.id, {url: items[i].url});
                     return true;
                 }
@@ -26,40 +26,33 @@ chrome.extension.onMessage.addListener(function(msg, sender) {
             return false;
         }
         
-        function pickNonShuffle(items) {
+        function pickShuffle(items, begin, end) {
             for (;;) {
-                var i = Math.floor(Math.random() * items.length);
-                if (items[i].url && items[i].url.indexOf("youtube.com") != -1) {
+                var i = Math.floor(Math.random() * (end - begin) + begin);
+                if (items[i].url && items[i].url.indexOf("youtube.com/watch") != -1) {
                     chrome.tabs.update(sender.tab.id, {url: items[i].url});
                     return;
                 }
             }
         }
 
-        function handleResults(items) {
+        chrome.bookmarks.search({}, function(items) {
+            var begin = 0;
+            var end = items.length;
+
+            for (var i=0; i<items.length; i++) {
+                if (items[i].title == "music" && !items[i].url)
+                    begin = i;
+                else if (begin && items[i].parentId == items[begin].parentId)
+                    end = i;
+            }
+            
             if (shuffle) {
-                pickShuffle(items);
+                pickShuffle(items, begin, end);
                 return;
             }
 
-            var found = pickNonShuffle(items);
-
-            /*if (found) return;
-            
-            chrome.extension.sendMessage({name: "settings-changed", 
-                reverse: reverse,
-                shuffle: shuffle,
-            });
-
-            walk(items);*/
-        }
-
-        chrome.bookmarks.search({title:"music"}, function(musics) {
-            if (musics[0]) {
-                chrome.bookmarks.getSubTree(musics[0].id, handleResults);
-            } else {
-                chrome.bookmarks.getTree(handleResults);
-            }
-        }
+            pickNonShuffle(items, begin, end);
+        });
     }
 });

@@ -1,8 +1,8 @@
 if (window == top) {
     function next() {
-        chrome.extension.sendMessage({name: "video-ended"});
-        //setTimeout(function() {
-        //}, 1500);
+        setTimeout(function() {
+            chrome.extension.sendMessage({name: "video-ended"});
+        }, 1500);
     }
 
     var video = document.getElementsByTagName('video')[0];
