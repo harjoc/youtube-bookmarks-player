@@ -1,10 +1,3 @@
-chrome.storage.sync.get([
-            "reverse", 
-            "shuffle",
-        ], function(cfg) {
-    chrome.extension.sendMessage({name: "settings-changed", cfg});
-});
-
 document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.sync.get([
                 "reverse", 
@@ -22,12 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 reverse: reverseCheck.checked,
                 shuffle: shuffleCheck.checked,
             });
-            chrome.extension.sendMessage({
-                name: "settings-changed", 
-
-                reverse: reverseCheck.checked,
-                shuffle: shuffleCheck.checked,
-            });
+            chrome.extension.sendMessage({name: "settings-changed"});
         }
 
         reverseCheck.addEventListener('click', collect);
