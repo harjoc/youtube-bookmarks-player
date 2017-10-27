@@ -1,7 +1,9 @@
+var browser = browser || chrome;
+
 if (window == top) {
     function next() {
         setTimeout(function() {
-            chrome.extension.sendMessage({name: "video-ended"});
+            browser.runtime.sendMessage({name: "video-ended"});
         }, 1500);
     }
 

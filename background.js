@@ -1,6 +1,9 @@
 var reverse = false;
 var shuffle = false;
 
+// todo use 'browser' everywhere
+var browser = browser || chrome;
+
 function loadSettings()
 {
     chrome.storage.sync.get(["shuffle", "reverse"], function(cfg) { 
@@ -97,7 +100,7 @@ chrome.browserAction.onClicked.addListener(function(tab__unused) {
     });
 });
 
-chrome.extension.onMessage.addListener(function(msg, sender) {
+browser.runtime.onMessage.addListener(function(msg, sender) {
     if (msg.name == "settings-changed") {
         loadSettings();
     } else if (msg.name == "video-ended") {
