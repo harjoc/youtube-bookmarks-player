@@ -1,3 +1,4 @@
+var disable = false;
 var reverse = false;
 var shuffle = false;
 
@@ -6,7 +7,8 @@ var browser = browser || chrome;
 
 function loadSettings()
 {
-    chrome.storage.sync.get(["shuffle", "reverse"], function(cfg) { 
+    chrome.storage.sync.get(["disable", "shuffle", "reverse"], function(cfg) { 
+        disable = cfg.disable;
         reverse = cfg.reverse;
         shuffle = cfg.shuffle;
     });
@@ -21,6 +23,12 @@ function updateTabUrl(tabId, newUrl)
 
 function pickNext(tab)
 {
+    // disable can be true when the user clicks our action icon
+    if (disable) {
+        disable = false;
+        chrome.storage.sync.set({disable: false});
+    }
+
 	function pickNonShuffle(items, begin, end) {
 		var found = false;
 		
@@ -104,6 +112,7 @@ browser.runtime.onMessage.addListener(function(msg, sender) {
     if (msg.name == "settings-changed") {
         loadSettings();
     } else if (msg.name == "video-ended") {
-		pickNext(sender.tab);
+        if (!disable)
+    		pickNext(sender.tab);
     }
 });
