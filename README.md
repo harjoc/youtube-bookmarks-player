@@ -2,9 +2,9 @@
 
 A browser extension that plays your bookmarked youtube videos as a playlist. 
 
-Tested in Chrome and Firefox. It will look for a 'music' bookmarks folder, pick
-Youtube URLs at random or sequentially depending on the 'Shuffle' setting and
-play a new one when the current video ends.
+Tested in Chrome and Firefox. It will look for a 'playlist' bookmarks folder, pick 
+Youtube URLs at random or sequentially depending on the settings and play a new 
+one when the current video ends. See the options page for more configuration.
 
 ### Install in Chrome
   - copy everything to a local dir
