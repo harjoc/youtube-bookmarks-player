@@ -1,16 +1,23 @@
 var disable = false;
 var reverse = false;
 var shuffle = false;
+var folder = "playlist";
 
 // todo use 'browser' everywhere
 var browser = browser || chrome;
 
 function loadSettings()
 {
-    chrome.storage.sync.get(["disable", "shuffle", "reverse"], function(cfg) { 
-        disable = cfg.disable;
-        reverse = cfg.reverse;
-        shuffle = cfg.shuffle;
+    chrome.storage.sync.get([
+            "disable", 
+            "shuffle", 
+            "reverse",
+            "folder",
+        ], function(cfg) { 
+            disable = cfg.disable;
+            reverse = cfg.reverse;
+            shuffle = cfg.shuffle;
+            folder = cfg.folder || "playlist";
     });
 }
 
@@ -77,7 +84,7 @@ function pickNext(tab)
         var end = items.length;
 
         for (var i=0; i<items.length; i++) {
-            if (items[i].title == "music" && !items[i].url) {
+            if (items[i].title == folder && !items[i].url) {
                 begin = i;
             } else if (begin && items[i].parentId == items[begin].parentId) {
                 end = i;

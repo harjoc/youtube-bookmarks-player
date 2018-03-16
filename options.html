@@ -5,14 +5,22 @@
 </head>
 <body style="width: 400px">
 
-<input type="checkbox" id="enable" name="enable"/>
-<label for="reverse">Enable</label></div>
-<br>
-<input type="checkbox" id="reverse" name="reverse"/>
-<label for="reverse">Reverse</label></div>
-<br>
-<input type="checkbox" id="shuffle" name="shuffle"/>
-<label for="shuffle">Shuffle</label></div>
+<table border=0>
+<tr>
+    <td><label for="reverse">Enable</label>
+    <td><input type="checkbox" id="enable" name="enable"/>
+<tr>
+    <td><label for="reverse">Reverse</label>
+    <td><input type="checkbox" id="reverse" name="reverse"/>
+<tr>
+    <td><label for="shuffle">Shuffle</label>
+    <td><input type="checkbox" id="shuffle" name="shuffle"/>
+<tr>
+    <td><label for="folder">Playlist folder</label>
+    <td>
+        <input type="text" id="folder" name="folder" size=15/>
+        <button type="button" id="set">Set</button>
+</table>
 
 </body>
 </html>
